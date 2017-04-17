@@ -1,5 +1,6 @@
 const path = require('path');
-const htmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 const srcDir = path.resolve(__dirname, 'src');
 const buildDir = path.resolve(__dirname, 'build');
@@ -22,20 +23,21 @@ module.exports = {
       {
         test: /\.ts$/,
         exclude: '/node_modules/',
-        use: 'awesome-typescript-loader'
+        use: ['awesome-typescript-loader', 'angular2-template-loader']
       },
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         exclude: '/node_modules/',
-        use: 'style-loader!css-loader'
+        use: ExtractTextWebpackPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader', publicPath: '/assets' })
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.ts', '.css', '.html']
+    extensions: ['.js', '.ts', '.scss','.css', '.html']
   },
   plugins: [
-    new htmlWebpackPlugin({
+    new ExtractTextWebpackPlugin('assets/css/style.css'),
+    new HtmlWebpackPlugin({
       template: srcDir + '/index.html',
       filename: 'index.html'
     })
